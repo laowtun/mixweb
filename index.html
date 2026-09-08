@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A modern introduction to AI and AI Agents.">
+<title>Neura — AI & Agents</title>
+<style>
+:root {
+  --bg: #f7f8fc;
+  --surface: rgba(255,255,255,.78);
+  --surface-solid: #fff;
+  --text: #11131a;
+  --muted: #687080;
+  --border: rgba(17,19,26,.10);
+  --accent: #6d5dfc;
+  --accent-2: #00bfa6;
+  --shadow: 0 20px 60px rgba(30,35,60,.10);
+}
+[data-theme="dark"] {
+  --bg: #080a0f;
+  --surface: rgba(18,21,30,.78);
+  --surface-solid: #12151e;
+  --text: #f4f6fb;
+  --muted: #9ba3b5;
+  --border: rgba(255,255,255,.09);
+  --accent: #8b7cff;
+  --accent-2: #22d3b6;
+  --shadow: 0 25px 80px rgba(0,0,0,.35);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(109,93,252,.15), transparent 30%),
+    radial-gradient(circle at 90% 20%, rgba(0,191,166,.10), transparent 25%),
+    var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  transition: background .3s, color .3s;
+}
+a { color: inherit; text-decoration: none; }
+.container { width: min(1120px, calc(100% - 40px)); margin: auto; }
+nav {
+  position: sticky; top: 0; z-index: 20;
+  backdrop-filter: blur(18px);
+  background: color-mix(in srgb, var(--bg) 75%, transparent);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  height: 72px; display: flex; align-items: center; justify-content: space-between;
+}
+.logo { display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-.03em; }
+.logo-mark {
+  width:36px; height:36px; border-radius:11px;
+  display:grid; place-items:center; color:#fff;
+  background: linear-gradient(135deg,var(--accent),var(--accent-2));
+  box-shadow: 0 8px 25px rgba(109,93,252,.28);
+  font-size:18px;
+}
+.links { display:flex; gap:28px; color:var(--muted); font-size:14px; }
+.links a:hover { color:var(--text); }
+.actions { display:flex; gap:10px; align-items:center; }
+.icon-btn {
+  border:1px solid var(--border); background:var(--surface); color:var(--text);
+  width:40px; height:40px; border-radius:12px; cursor:pointer; font-size:17px;
+}
+.btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:12px 18px; border-radius:12px; font-weight:700; font-size:14px;
+  border:1px solid var(--border); background:var(--surface); box-shadow:var(--shadow);
+}
+.btn.primary { color:#fff; border:0; background:linear-gradient(135deg,var(--accent),#5141df); }
+.hero { padding:110px 0 90px; text-align:center; }
+.badge {
+  display:inline-flex; padding:7px 12px; border:1px solid var(--border);
+  background:var(--surface); border-radius:999px; color:var(--muted); font-size:13px;
+}
+h1 { margin:22px auto; max-width:900px; font-size:clamp(48px,8vw,88px); line-height:.98; letter-spacing:-.065em; }
+.gradient { background:linear-gradient(100deg,var(--accent),var(--accent-2)); color:transparent; background-clip:text; }
+.hero p { max-width:680px; margin:auto; color:var(--muted); font-size:18px; }
+.hero-actions { margin-top:30px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.visual {
+  margin:70px auto 0; max-width:920px; min-height:330px; padding:24px;
+  border:1px solid var(--border); border-radius:28px; background:var(--surface);
+  box-shadow:var(--shadow); backdrop-filter:blur(20px); position:relative; overflow:hidden;
+}
+.orbit { position:absolute; inset:45px; border:1px dashed var(--border); border-radius:50%; animation:spin 18s linear infinite; }
+.orbit.two { inset:85px; animation-duration:12s; animation-direction:reverse; }
+.core {
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:105px; height:105px; border-radius:30px; display:grid; place-items:center;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff;
+  font-size:38px; box-shadow:0 20px 60px rgba(109,93,252,.35);
+}
+.node {
+  position:absolute; width:58px; height:58px; border-radius:18px;
+  display:grid; place-items:center; background:var(--surface-solid); border:1px solid var(--border);
+  box-shadow:var(--shadow); font-size:22px;
+}
+.n1 { top:18px; left:18%; } .n2 { top:30px; right:18%; }
+.n3 { bottom:22px; left:25%; } .n4 { bottom:25px; right:24%; }
+section { padding:90px 0; }
+.section-head { max-width:680px; margin-bottom:35px; }
+.eyebrow { color:var(--accent); font-weight:800; font-size:13px; text-transform:uppercase; letter-spacing:.13em; }
+h2 { font-size:clamp(34px,5vw,55px); line-height:1.05; letter-spacing:-.045em; margin:10px 0 14px; }
+.section-head p { color:var(--muted); }
+.grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+.card {
+  padding:28px; border:1px solid var(--border); border-radius:22px;
+  background:var(--surface); box-shadow:var(--shadow);
+}
+.card-icon { font-size:27px; margin-bottom:25px; }
+.card h3 { margin-bottom:8px; font-size:20px; }
+.card p { color:var(--muted); font-size:15px; }
+.agent {
+  display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:center;
+}
+.agent-panel {
+  padding:25px; border-radius:24px; border:1px solid var(--border); background:var(--surface);
+  box-shadow:var(--shadow);
+}
+.step { display:flex; gap:15px; padding:17px 0; border-bottom:1px solid var(--border); }
+.step:last-child { border-bottom:0; }
+.num {
+  flex:0 0 34px; height:34px; display:grid; place-items:center;
+  border-radius:10px; background:rgba(109,93,252,.14); color:var(--accent); font-weight:800;
+}
+.step p { color:var(--muted); font-size:14px; }
+.quote {
+  text-align:center; padding:70px 30px; border:1px solid var(--border);
+  border-radius:28px; background:linear-gradient(135deg,rgba(109,93,252,.10),rgba(0,191,166,.07));
+}
+.quote p { font-size:clamp(25px,4vw,40px); font-weight:750; letter-spacing:-.03em; max-width:850px; margin:auto; }
+footer { padding:35px 0; border-top:1px solid var(--border); color:var(--muted); font-size:13px; }
+.footer-inner { display:flex; justify-content:space-between; gap:20px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+@media(max-width:800px) {
+  .links { display:none; }
+  .grid,.agent { grid-template-columns:1fr; }
+  .hero { padding-top:75px; }
+  .visual { min-height:270px; }
+  .orbit { inset:35px 15px; } .orbit.two { inset:70px 50px; }
+  .footer-inner { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a class="logo" href="#">
+      <span class="logo-mark">N</span>
+      <span>NEURA</span>
+    </a>
+    <div class="links">
+      <a href="#ai">AI</a>
+      <a href="#agents">Agents</a>
+      <a href="#future">Future</a>
+    </div>
+    <div class="actions">
+      <button class="icon-btn" id="themeBtn" aria-label="Toggle dark mode">☾</button>
+      <a class="btn primary" href="#agents">Explore Agents</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <span class="badge">The next layer of intelligent software</span>
+      <h1>AI that thinks.<br><span class="gradient">Agents that act.</span></h1>
+      <p>
+        Artificial intelligence is moving beyond simple answers.
+        AI agents can understand goals, reason through problems, use tools,
+        and turn ideas into real actions.
+      </p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#ai">Discover AI →</a>
+        <a class="btn" href="#agents">How Agents Work</a>
+      </div>
+
+      <div class="visual" aria-label="AI agent visualization">
+        <div class="orbit"></div>
+        <div class="orbit two"></div>
+        <div class="core">✦</div>
+        <div class="node n1">🧠</div>
+        <div class="node n2">⚡</div>
+        <div class="node n3">🔧</div>
+        <div class="node n4">◎</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ai">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">01 — Artificial Intelligence</span>
+        <h2>From information to intelligence.</h2>
+        <p>
+          Modern AI systems learn patterns from enormous amounts of data,
+          enabling them to understand language, analyze images, generate content,
+          and solve increasingly complex problems.
+        </p>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <div class="card-icon">🧠</div>
+          <h3>Understand</h3>
+          <p>Process language, images, audio, code, and structured information to build useful context.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">✦</div>
+          <h3>Generate</h3>
+          <p>Create text, software, designs, ideas, summaries, and other forms of digital content.</p>
+        </article>
+        <article class="card">
+          <div class="card-icon">◎</div>
+          <h3>Reason</h3>
+          <p>Break complex goals into smaller steps and evaluate possible solutions before responding.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="agents">
+    <div class="container agent">
+      <div>
+        <span class="eyebrow">02 — AI Agents</span>
+        <h2>AI that can move from thinking to doing.</h2>
+        <p style="color:var(--muted); margin-bottom:25px;">
+          An AI agent combines a model with memory, tools, instructions,
+          and an execution loop. Instead of waiting for every instruction,
+          it can pursue a defined objective and adapt along the way.
+        </p>
+        <a class="btn primary" href="#future">See the bigger picture</a>
+      </div>
+
+      <div class="agent-panel">
+        <div class="step">
+          <div class="num">1</div>
+          <div><strong>Goal</strong><p>Receive an objective and understand what success looks like.</p></div>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <div><strong>Plan</strong><p>Reason about the task and choose the next useful action.</p></div>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <div><strong>Act</strong><p>Use APIs, search, code, databases, and other tools.</p></div>
+        </div>
+        <div class="step">
+          <div class="num">4</div>
+          <div><strong>Adapt</strong><p>Observe results, correct mistakes, and continue until the goal is reached.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="future">
+    <div class="container">
+      <div class="quote">
+        <span class="eyebrow">03 — The Future</span>
+        <p>“The most powerful AI won't just answer your questions. It will help you accomplish what you came to do.”</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <span>© 2026 NEURA. Built for the intelligent web.</span>
+    <span>AI · Agents · Intelligence</span>
+  </div>
+</footer>
+
+<script>
+const root = document.documentElement;
+const btn = document.getElementById("themeBtn");
+
+const saved = localStorage.getItem("theme");
+if (saved === "dark") {
+  root.setAttribute("data-theme", "dark");
+  btn.textContent = "☀";
+}
+
+btn.addEventListener("click", () => {
+  const dark = root.getAttribute("data-theme") === "dark";
+  if (dark) {
+    root.removeAttribute("data-theme");
+    localStorage.setItem("theme", "light");
+    btn.textContent = "☾";
+  } else {
+    root.setAttribute("data-theme", "dark");
+    localStorage.setItem("theme", "dark");
+    btn.textContent = "☀";
+  }
+});
+</script>
+
+</body>
+</html>
