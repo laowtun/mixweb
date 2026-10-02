@@ -1,0 +1,9 @@
+version: 1
+
+services:
+  app:
+    type: container
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - 3000
